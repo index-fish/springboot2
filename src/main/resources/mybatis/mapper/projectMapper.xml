@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot2.dao.ProjectMapper">
+    <select id="getProjectsByUserName" parameterType="string" resultMap="Project">
+        select *
+        from project
+        where projectID in (select projectID from userHub where userName = #{userName})
+    </select>
+    <select id="getDevelopersByProject" parameterMap="Project" resultMap="User">
+        select *
+        from user
+        where userName in (select userName from userHub where projectID = #{projectID})
+    </select>
+    <insert id="addProjectToProject" useGeneratedKeys="true" keyProperty="projectID">
+        insert into project (projectName, projectPath, lastUpdateTime)
+        values (#{projectName}, #{projectPath}, #{lastUpdateTime})
+    </insert>
+    <delete id="deleteProject" parameterMap="Project">
+        delete
+        from project
+        where projectID = #{projectID}
+    </delete>
+    <insert id="addDevelopersToUserHub">
+        insert into userHub (userName, projectId, authority) values
+        <foreach collection="list" item="user" separator=",">
+            (#{user.userName}, #{projectID}, #{authority})
+        </foreach>
+    </insert>
+    <delete id="deleteDevelopers">
+        delete
+        from userHub
+        where projectID = #{projectID}
+        and userName in
+        <foreach collection="list" item="user" separator=",">
+            (#(userName))
+        </foreach>
+    </delete>
+    <delete id="deleteDevelopersByProject" parameterMap="Project">
+        delete
+        from userHub
+        where projectID = #{projectID}
+    </delete>
+    <select id="getUserHubByUserNameAndProjectID" resultMap="UserHub">
+        select *
+        from userHub
+        where userName = #{userName}
+          and projectID = #{projectID}
+    </select>
+</mapper>
