@@ -158,8 +158,8 @@ public class ProjectController {
      * 2，必须将 ueditorUrl 目录设置为静态资源路径，否则上传的文件可能无法访问
      * 3，注意访问配置文件的方式 ueditor.config.js 请求的路径就是 config.json 放置的同级路径
      */
-    @RequestMapping("upload")
-    public String upload(HttpServletRequest request, String action) {
+    @RequestMapping("/upload")
+    public String upload(HttpServletRequest request, String action) {//整合UEdit实现在线编辑预览
         String result = new ActionEnter(request, basePath.getBasePath()).exec();
         basePath.setBasePath(basePath.getBasePath().replaceAll("\\\\", "/"));
         if (action != null && (action.equals("listfile") || action.equals("listimage"))) {

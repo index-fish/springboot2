@@ -15,6 +15,5 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "basepath")
 public class BasePath {
-
     String basePath;
 }

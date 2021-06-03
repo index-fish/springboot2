@@ -19,6 +19,7 @@ mybatis:
   mapper-locations: classpath:mybatis/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+
 #项目保存根目录
 basepath:
   basePath: '/Users/jiyu/Desktop/课程设计/projects'

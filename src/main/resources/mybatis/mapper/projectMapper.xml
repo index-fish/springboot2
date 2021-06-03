@@ -3,12 +3,32 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.springboot2.dao.ProjectMapper">
-    <select id="getProjectsByUserName" parameterType="string" resultMap="Project">
+    <resultMap type="com.example.springboot2.model.Project" id="ProjectMap">
+        <!-- 定义主键 ,非常重要。如果是多个字段,则定义多个id -->
+        <!-- property：主键在pojo中的属性名 -->
+        <!-- column：主键在数据库中的列名 -->
+        <id property="projectID" column="projectID"/>
+
+        <!-- 定义普通属性 -->
+        <result property="projectName" column="projectName"/>
+        <result property="projectPath" column="projectPath"/>
+        <result property="lastUpdateTime" column="lastUpdateTime"/>
+    </resultMap>
+    <resultMap id="UserMap" type="com.example.springboot2.model.User">
+        <id property="userName" column="userName"/>
+        <result property="password" column="password"/>
+    </resultMap>
+    <resultMap id="UserHubMap" type="com.example.springboot2.model.UserHub">
+        <id property="userName" column="userName"/>
+        <id property="projectName" column="projectName"/>
+    </resultMap>
+
+    <select id="getProjectsByUserName" parameterType="string" resultMap="ProjectMap">
         select *
         from project
         where projectID in (select projectID from userHub where userName = #{userName})
     </select>
-    <select id="getDevelopersByProject" parameterMap="Project" resultMap="User">
+    <select id="getDevelopersByProject" parameterType="com.example.springboot2.model.Project" resultMap="UserMap">
         select *
         from user
         where userName in (select userName from userHub where projectID = #{projectID})
@@ -17,7 +37,7 @@
         insert into project (projectName, projectPath, lastUpdateTime)
         values (#{projectName}, #{projectPath}, #{lastUpdateTime})
     </insert>
-    <delete id="deleteProject" parameterMap="Project">
+    <delete id="deleteProject" parameterType="com.example.springboot2.model.Project">
         delete
         from project
         where projectID = #{projectID}
@@ -37,12 +57,12 @@
             (#(userName))
         </foreach>
     </delete>
-    <delete id="deleteDevelopersByProject" parameterMap="Project">
+    <delete id="deleteDevelopersByProject" parameterType="com.example.springboot2.model.Project">
         delete
         from userHub
         where projectID = #{projectID}
     </delete>
-    <select id="getUserHubByUserNameAndProjectID" resultMap="UserHub">
+    <select id="getUserHubByUserNameAndProjectID" resultMap="UserHubMap">
         select *
         from userHub
         where userName = #{userName}

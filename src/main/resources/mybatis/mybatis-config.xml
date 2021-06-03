@@ -8,4 +8,5 @@
         <typeAlias type="com.example.springboot2.model.User" alias="User"/>
         <typeAlias type="com.example.springboot2.model.UserHub" alias="UserHub"/>
     </typeAliases>
+    
 </configuration>
